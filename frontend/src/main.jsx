@@ -14,23 +14,27 @@ import ApiLinks from './Pages/ApiPage';
 import AllUsers from './Pages/UsershowPage';
 import Overview from './Pages/OverviewPage';
 
+import { ProtectRoute, PublicRoute } from './utils/userAuthenticated';
+import ProfilePage from './Pages/ProfilePage';
+
 const router = createBrowserRouter([
     {
       path: "/",
       element: <Layout />, 
       children: [
         { index: true, element: <LandingPage /> },    
-        { path: "register", element: <RegisterPage /> },  
-        { path: "login", element: <LoginPage /> },  
+        { path: "register", element: (<PublicRoute><RegisterPage /></PublicRoute>) },  
+        { path: "login", element: (<PublicRoute><LoginPage /></PublicRoute>) },  
       ],
     },
     {
       path: "/index",
       element: <Layout2 />,
       children: [
-        { index: true, element: <ApiLinks /> },
-        { path: "user/all", element: <AllUsers /> },  
-        { path: "overview", element: <Overview /> },  
+        { index: true, element: (<ProtectRoute><ApiLinks /></ProtectRoute>) },
+        { path: "user/all", element: (<ProtectRoute><AllUsers /></ProtectRoute>) },  
+        { path: "overview", element: (<ProtectRoute><Overview /></ProtectRoute>) },  
+        { path: "profile", element: (<ProtectRoute><ProfilePage /></ProtectRoute>) }, 
       ],
     },
 ]);

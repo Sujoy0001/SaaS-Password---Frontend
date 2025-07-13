@@ -1,18 +1,37 @@
+import React, { useEffect, useState } from 'react';
 import { FiBell } from "react-icons/fi";
 import { HiOutlineUserCircle } from "react-icons/hi";
+import { getClientEmail, getClientByEmail, removeToken } from '../context/Auth'; // adjust path as needed
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
+  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const email = getClientEmail();
+    if (email) {
+      getClientByEmail(email)
+        .then((data) => {
+          setUsername(data.username);
+        })
+        .catch((err) => {
+          console.error('Failed to fetch user:', err);
+        });
+    }
+  }, []);
+
+  const handleLogout = () => {
+    removeToken();
+    navigate('/login');
+  };
+
   return (
     <nav className="sticky top-0 z-50 bg-gray-900 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Left side - Logo */}
           <div className="flex items-center">
-            <img
-              src="https://via.placeholder.com/40/333333/FFFFFF?text=DB"
-              alt="Logo"
-              className="h-8 w-8 mr-2 rounded"
-            />
             <span className="text-xl font-bold text-white">DarkBrand</span>
           </div>
 
@@ -26,7 +45,7 @@ const Navbar = () => {
               </span>
             </button>
 
-            {/* User profile */}
+            {/* User profile and logout */}
             <div className="flex items-center space-x-2">
               <div className="relative">
                 <button className="flex items-center focus:outline-none group">
@@ -34,10 +53,18 @@ const Navbar = () => {
                     <HiOutlineUserCircle className="h-6 w-6 text-gray-300 group-hover:text-white" />
                   </div>
                   <span className="ml-2 text-sm font-medium text-gray-300 group-hover:text-white hidden md:inline">
-                    John Doe
+                    {username || "Loading..."}
                   </span>
                 </button>
               </div>
+
+              {/* Logout button */}
+              <button
+                onClick={handleLogout}
+                className="text-sm text-gray-300 hover:text-white px-3 py-1 border border-gray-500 rounded"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
