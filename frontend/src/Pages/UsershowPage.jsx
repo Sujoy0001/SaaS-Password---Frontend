@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsers, deleteUser } from "../context/Api";
-import { FiUser, FiMail, FiTrash2, FiSearch, FiAlertCircle, FiLoader } from "react-icons/fi";
+import { getAllUsers, deleteUser } from "../context/Auth";
+import {
+  FiUser,
+  FiMail,
+  FiTrash2,
+  FiSearch,
+  FiAlertCircle,
+  FiLoader,
+} from "react-icons/fi";
 
 const UsershowPage = () => {
   const [users, setUsers] = useState([]);
@@ -10,34 +17,34 @@ const UsershowPage = () => {
   const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getAllUsers();
-        
-        // Handle different response formats
-        let usersData = [];
-        if (Array.isArray(data)) {
-          usersData = data;
-        } else if (data?.data) {
-          usersData = data.data;
-        } else if (data?.users) {
-          usersData = data.users;
-        } else {
-          throw new Error("Invalid users data format");
-        }
-
-        setUsers(usersData);
-        setError("");
-      } catch (err) {
-        console.error("Fetch error:", err);
-        setError(err.message || "Failed to load users");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
+    const cachedUsers = localStorage.getItem("all_users");
+    if (cachedUsers) {
+      setUsers(JSON.parse(cachedUsers));
+      setLoading(false);
+    } else {
+      fetchUsers();
+    }
   }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const data = await getAllUsers();
+      let usersData = [];
+      if (Array.isArray(data)) usersData = data;
+      else if (data?.data) usersData = data.data;
+      else if (data?.users) usersData = data.users;
+      else throw new Error("Invalid users data format");
+
+      setUsers(usersData);
+      localStorage.setItem("all_users", JSON.stringify(usersData));
+      setError("");
+    } catch (err) {
+      setError(err.message || "Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
@@ -45,23 +52,25 @@ const UsershowPage = () => {
     try {
       setDeletingId(userId);
       await deleteUser(userId);
-      setUsers(users.filter(user => user.id !== userId));
+      const updatedUsers = users.filter((user) => user.id !== userId);
+      setUsers(updatedUsers);
+      localStorage.setItem("all_users", JSON.stringify(updatedUsers));
     } catch (err) {
-      console.error("Delete error:", err);
       setError(err.message);
     } finally {
       setDeletingId(null);
     }
   };
 
-  const filteredUsers = users.filter(user =>
-    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-900">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black">
         <FiLoader className="animate-spin text-4xl text-blue-500 mb-4" />
         <p className="text-gray-400">Loading users...</p>
       </div>
@@ -70,8 +79,8 @@ const UsershowPage = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-900 p-4">
-        <div className="max-w-md w-full bg-gray-800 border-l-4 border-red-500 p-4 rounded-lg">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black p-4">
+        <div className="max-w-md w-full bg-gray-900 border-l-4 border-red-500 p-4 rounded-lg">
           <div className="flex items-center mb-2">
             <FiAlertCircle className="text-red-400 mr-2" />
             <h3 className="text-lg font-medium text-red-400">Error</h3>
@@ -79,7 +88,7 @@ const UsershowPage = () => {
           <p className="text-gray-300 mb-4">{error}</p>
           <div className="flex space-x-3">
             <button
-              onClick={() => window.location.reload()}
+              onClick={fetchUsers}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
               Retry
@@ -97,7 +106,7 @@ const UsershowPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 p-4 md:p-8">
+    <div className="min-h-screen bg-black text-gray-200 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
@@ -107,14 +116,15 @@ const UsershowPage = () => {
               <input
                 type="text"
                 placeholder="Search users..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-200"
+                className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-200"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
           <h1 className="text-2xl font-bold text-white">
-            All Users <span className="text-blue-400">({filteredUsers.length})</span>
+            All Users{" "}
+            <span className="text-blue-400">({filteredUsers.length})</span>
           </h1>
         </div>
 
@@ -122,10 +132,13 @@ const UsershowPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
-              <div key={user.id} className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 hover:border-gray-600 transition-colors">
+              <div
+                key={user.id}
+                className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 hover:border-blue-600 transition-colors"
+              >
                 <div className="p-6">
                   <div className="flex items-center mb-4">
-                    <div className="bg-blue-900/20 p-3 rounded-full mr-4">
+                    <div className="bg-blue-800/30 p-3 rounded-full mr-4">
                       <FiUser className="text-blue-400" />
                     </div>
                     <div>
@@ -162,13 +175,15 @@ const UsershowPage = () => {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12 bg-gray-800/50 rounded-lg border border-gray-700">
+            <div className="col-span-full text-center py-12 bg-gray-900 rounded-lg border border-gray-800">
               <FiUser className="mx-auto text-gray-600 text-4xl mb-4" />
               <h3 className="text-xl font-medium text-gray-300">
                 {searchTerm ? "No users found" : "No users available"}
               </h3>
               <p className="text-gray-500 mt-2">
-                {searchTerm ? "Try a different search" : "Check your server connection"}
+                {searchTerm
+                  ? "Try a different search"
+                  : "Check your server connection"}
               </p>
             </div>
           )}
