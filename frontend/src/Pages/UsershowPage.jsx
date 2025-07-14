@@ -1,3 +1,5 @@
+// src/pages/UsershowPage.jsx
+
 import React, { useEffect, useState } from "react";
 import { getAllUsers, deleteUser } from "../context/Auth";
 import {
@@ -28,17 +30,14 @@ const UsershowPage = () => {
 
   const fetchUsers = async () => {
     setLoading(true);
+    setError("");
     try {
       const data = await getAllUsers();
-      let usersData = [];
-      if (Array.isArray(data)) usersData = data;
-      else if (data?.data) usersData = data.data;
-      else if (data?.users) usersData = data.users;
-      else throw new Error("Invalid users data format");
-
+      const usersData = Array.isArray(data)
+        ? data
+        : data?.data || data?.users || [];
       setUsers(usersData);
       localStorage.setItem("all_users", JSON.stringify(usersData));
-      setError("");
     } catch (err) {
       setError(err.message || "Failed to load users");
     } finally {
@@ -56,7 +55,7 @@ const UsershowPage = () => {
       setUsers(updatedUsers);
       localStorage.setItem("all_users", JSON.stringify(updatedUsers));
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Failed to delete user");
     } finally {
       setDeletingId(null);
     }

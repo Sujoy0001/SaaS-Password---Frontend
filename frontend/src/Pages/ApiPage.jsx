@@ -1,3 +1,5 @@
+// src/pages/ApiPage.jsx
+
 import React, { useEffect, useState } from "react";
 import { getClientByEmail } from "../context/Auth";
 import {
@@ -15,7 +17,7 @@ const ApiPage = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const cachedClient = localStorage.getItem("client_data");
+    const cachedClient = localStorage.getItem("clientData"); // updated key as per your Auth.js
     if (cachedClient) {
       setClientData(JSON.parse(cachedClient));
       setLoading(false);
@@ -26,10 +28,11 @@ const ApiPage = () => {
 
   const fetchClientData = async () => {
     setLoading(true);
+    setError("");
     try {
       const data = await getClientByEmail();
       setClientData(data);
-      localStorage.setItem("client_data", JSON.stringify(data));
+      localStorage.setItem("clientData", JSON.stringify(data)); // updated key
     } catch (err) {
       setError(err.message || "Failed to fetch client data. Please try again later.");
     } finally {
