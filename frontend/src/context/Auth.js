@@ -8,7 +8,6 @@ export const registerClient = async (clientData) => {
     const response = await axios.post(`${BASE_URL}/auth/register`, clientData);
     return response.data;
   } catch (error) {
-    console.error('Register error:', error);
     throw error.response?.data || error;
   }
 };
@@ -16,31 +15,28 @@ export const registerClient = async (clientData) => {
 export const loginClient = async (loginData) => {
   try {
     const response = await axios.post(`${BASE_URL}/auth/login`, loginData);
-    const {  access_token, email } = response.data;
+    const { access_token, email } = response.data;
     storeToken(access_token);
     storeClientEmail(email);
     return response.data;
   } catch (error) {
-    console.error('Login error:', error);
     throw error.response?.data || error;
   }
 };
 
 export const storeToken = (token) => {
-  console.log("Storing token:", token);
   Cookies.set('authToken', token, { expires: 7 });
 };
 
 export const getToken = () => {
-  const token = Cookies.get('authToken');
-  console.log("Retrieved token:", token);
-  return token;
+  return Cookies.get('authToken');
 };
 
 export const removeToken = () => {
   Cookies.remove('authToken');
   Cookies.remove('clientEmail');
-  console.log("Removed token and client email from cookies.");
+  localStorage.removeItem('clientData');
+  localStorage.removeItem('api_key');
 };
 
 export const isAuthenticated = () => {
@@ -48,28 +44,27 @@ export const isAuthenticated = () => {
 };
 
 export const storeClientEmail = (email) => {
-  console.log("Storing client email:", email);
   Cookies.set('clientEmail', email, { expires: 7 });
 };
 
 export const getClientEmail = () => {
-  const email = Cookies.get('clientEmail');
-  console.log("Retrieved client email from cookies:", email);
-  return email;
+  return Cookies.get('clientEmail');
 };
 
 export const getClientByEmail = async () => {
   try {
-    const clientEmail = getClientEmail(); // get email from cookies
+    const cachedData = localStorage.getItem('clientData');
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
 
+    const clientEmail = getClientEmail();
     if (!clientEmail) {
-      console.error("No client email found in cookies.");
       throw new Error('No client email found in cookies.');
     }
 
     const encodedEmail = encodeURIComponent(clientEmail);
     const url = `${BASE_URL}/clients/${encodedEmail}`;
-    console.log('Fetching client by email:', url);
 
     const token = getToken();
     if (!token) {
@@ -83,22 +78,21 @@ export const getClientByEmail = async () => {
     const { api_key } = response.data;
 
     storeApi(api_key);
+    localStorage.setItem('clientData', JSON.stringify(response.data));
 
     return response.data;
   } catch (error) {
-    console.error('Error fetching client data:', error.response || error.message);
     throw new Error('Failed to fetch client data. Please try again later.');
   }
 };
 
 export const storeApi = (api) => {
-  Cookies.set('api_key', api);
-}
+  localStorage.setItem('api_key', api);
+};
 
 export const getApi = () => {
-  const api = Cookies.get('api_key')
-  return api;
-}
+  return localStorage.getItem('api_key');
+};
 
 export const getAllUsers = async () => {
   try {
@@ -111,7 +105,6 @@ export const getAllUsers = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching users:", error.response || error.message);
     throw error;
   }
 };
@@ -130,7 +123,6 @@ export const deleteUser = async (userId) => {
     });
     return response.data;
   } catch (error) {
-    console.error('Delete user error:', error.response || error.message);
     throw new Error(error.response?.data?.message || error.message || 'Failed to delete user');
   }
 };
