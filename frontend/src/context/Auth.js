@@ -37,6 +37,7 @@ export const removeToken = () => {
   Cookies.remove('clientEmail');
   localStorage.removeItem('clientData');
   localStorage.removeItem('api_key');
+  localStorage.removeItem('all_users');
 };
 
 export const isAuthenticated = () => {
@@ -76,13 +77,12 @@ export const getClientByEmail = async () => {
     });
 
     const { api_key } = response.data;
-
     storeApi(api_key);
     localStorage.setItem('clientData', JSON.stringify(response.data));
 
     return response.data;
   } catch (error) {
-    throw new Error('Failed to fetch client data. Please try again later.');
+    throw new Error(error.response?.data?.message || 'Failed to fetch client data. Please try again later.');
   }
 };
 
@@ -103,9 +103,15 @@ export const getAllUsers = async () => {
     const response = await axios.get(`${BASE_URL}/${api}/user/all`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data;
+
+    const data = response.data;
+    if (!Array.isArray(data) && !data?.users && !data?.data) {
+      throw new Error('Unexpected response format from getAllUsers');
+    }
+
+    return data;
   } catch (error) {
-    throw error;
+    throw error.response?.data?.message || error.message || 'Failed to fetch users';
   }
 };
 

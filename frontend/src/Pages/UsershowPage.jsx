@@ -18,8 +18,9 @@ const UsershowPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [deletingId, setDeletingId] = useState(null);
 
+  // Load users on page load
   useEffect(() => {
-    const cachedUsers = localStorage.getItem();
+    const cachedUsers = localStorage.getItem("all_users");
     if (cachedUsers) {
       setUsers(JSON.parse(cachedUsers));
       setLoading(false);
@@ -28,45 +29,56 @@ const UsershowPage = () => {
     }
   }, []);
 
+  // Fetch all users from API
   const fetchUsers = async () => {
     setLoading(true);
     setError("");
     try {
       const data = await getAllUsers();
+      console.log("Fetched users data:", data);
+
+      // Ensure data structure is an array
       const usersData = Array.isArray(data)
         ? data
         : data?.data || data?.users || [];
+
       setUsers(usersData);
       localStorage.setItem("all_users", JSON.stringify(usersData));
     } catch (err) {
+      console.error("Fetch users error:", err);
       setError(err.message || "Failed to load users");
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle user deletion
   const handleDelete = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
     try {
       setDeletingId(userId);
       await deleteUser(userId);
+
       const updatedUsers = users.filter((user) => user.id !== userId);
       setUsers(updatedUsers);
       localStorage.setItem("all_users", JSON.stringify(updatedUsers));
     } catch (err) {
+      console.error("Delete user error:", err);
       setError(err.message || "Failed to delete user");
     } finally {
       setDeletingId(null);
     }
   };
 
+  // Filter users by search term
   const filteredUsers = users.filter(
     (user) =>
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Loading state
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black">
@@ -76,6 +88,7 @@ const UsershowPage = () => {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-black p-4">
@@ -104,6 +117,7 @@ const UsershowPage = () => {
     );
   }
 
+  // Main render
   return (
     <div className="min-h-screen bg-black text-gray-200 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
@@ -132,7 +146,7 @@ const UsershowPage = () => {
           {filteredUsers.length > 0 ? (
             filteredUsers.map((user) => (
               <div
-                key={user.id}
+                key={user.id || user.email}
                 className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 hover:border-blue-600 transition-colors"
               >
                 <div className="p-6">
