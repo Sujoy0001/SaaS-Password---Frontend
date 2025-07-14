@@ -17,6 +17,8 @@ import Overview from './Pages/OverviewPage';
 import { ProtectRoute, PublicRoute } from './utils/userAuthenticated';
 import ProfilePage from './Pages/ProfilePage';
 
+import ContactPage from './Pages/Contact';
+
 const router = createBrowserRouter([
     {
       path: "/",
@@ -25,6 +27,7 @@ const router = createBrowserRouter([
         { index: true, element: <LandingPage /> },    
         { path: "register", element: (<PublicRoute><RegisterPage /></PublicRoute>) },  
         { path: "login", element: (<PublicRoute><LoginPage /></PublicRoute>) },  
+        { path: "contact", element: <ContactPage /> },  
       ],
     },
     {
@@ -35,6 +38,7 @@ const router = createBrowserRouter([
         { path: "users", element: (<ProtectRoute><AllUsers /></ProtectRoute>) },  
         { path: "overview", element: (<ProtectRoute><Overview /></ProtectRoute>) },  
         { path: "profile", element: (<ProtectRoute><ProfilePage /></ProtectRoute>) }, 
+        { path: "contact", element: <ContactPage /> },  
       ],
     },
 ]);

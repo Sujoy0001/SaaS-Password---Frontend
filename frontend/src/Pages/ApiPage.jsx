@@ -61,8 +61,8 @@ const ApiPage = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
-        <FiLoader className="animate-spin h-12 w-12 text-blue-500 mb-4" />
+      <div className="flex flex-col items-center justify-center min-h-full p-20">
+        <FiLoader className="animate-spin h-12 w-12 text-zinc-800 mb-4" />
         <p className="text-gray-400 text-lg">Loading your API dashboard...</p>
       </div>
     );
@@ -70,20 +70,35 @@ const ApiPage = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
-        <div className="max-w-md w-full bg-gray-800 border-l-4 border-red-500 p-6 rounded-lg">
-          <div className="flex items-center mb-3">
-            <FiAlertCircle className="h-6 w-6 text-red-400 mr-2" />
-            <h3 className="text-xl font-medium text-red-400">Error</h3>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="max-w-md w-full bg-zinc-900 rounded-lg shadow-xl overflow-hidden border-2 border-zinc-700">
+          <div className="p-6">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <FiAlertCircle className="h-6 w-6 text-red-700" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-medium text-gray-100">Error Occurred</h3>
+                <div className="mt-2 text-sm text-gray-300">
+                  <p>{error}</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-gray-300 mb-6">{error}</p>
-          <button
-            onClick={fetchClientData}
-            className="w-full flex items-center justify-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-gray-100 rounded-md transition-colors"
-          >
-            <FiRefreshCw className="mr-2" />
-            Retry
-          </button>
+          <div className="px-6 py-4 flex justify-end space-x-3">
+            <button
+              onClick={() => setError("")}
+              className="px-4 py-2 text-sm font-medium text-gray-300 bg-zinc-700 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-150"
+            >
+              Continue
+            </button>
+            <button
+              onClick={fetchUsers}
+              className="px-4 py-2 text-sm font-medium text-gray-100 bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -110,7 +125,7 @@ const ApiPage = () => {
           </button>
         </header>
 
-        <div className="bg-zinc-900 p-4 rounded-lg border border-zinc-800 mb-6">
+        <div className="bg-zinc-950 p-4 rounded-lg border border-zinc-800 mb-6">
           <h2 className="text-lg font-semibold text-blue-300 mb-2 flex items-center">
             💡 How to use these APIs?
           </h2>

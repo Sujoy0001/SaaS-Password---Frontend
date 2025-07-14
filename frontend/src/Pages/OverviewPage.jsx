@@ -1,174 +1,94 @@
-// src/pages/OverviewPage.jsx
-import React from 'react';
-import { FiUsers, FiSearch, FiTrash2, FiUser, FiMail, FiAlertTriangle, FiCheck } from 'react-icons/fi';
+import React from "react";
 
 const OverviewPage = () => {
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-200 p-6 md:p-10">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="mb-10 text-center">
-          <h1 className="text-4xl font-bold text-blue-400 mb-4">User Management System</h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            A comprehensive dashboard for managing your application users with search and delete functionality
+    <div className="min-h-screen text-gray-100">
+      <div className="max-w-6xl mx-auto rounded-lg shadow-lg p-8 space-y-8">
+        {/* Heading */}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-100 mb-2">PlugAPI Overview</h1>
+          <p className="text-gray-300 italic">
+            Welcome to the PlugAPI Overview page. This platform provides a ready-to-use
+            authentication and user management system for your projects.
           </p>
-        </header>
+        </div>
 
-        {/* Main Features */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-bold text-white border-b border-gray-700 pb-2 mb-6">Key Features</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-              <div className="text-blue-400 mb-4">
-                <FiUsers className="text-3xl" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">User Listing</h3>
-              <p className="text-gray-400">
-                View all registered users in a clean card layout with essential details including username, email, and user ID.
-              </p>
-            </div>
+        {/* What is this platform */}
+        <div className="rounded-lg p-6 border border-zinc-700">
+          <h2 className="text-xl font-semibold text-gray-100 mb-2">
+            What is this API platform?
+          </h2>
+          <p className="text-gray-300">
+            This API platform allows you to register users, authenticate them, view
+            all registered users, and delete users without building these features
+            from scratch. It saves development time and ensures your projects have
+            secure and reliable user management.
+          </p>
+        </div>
 
-            {/* Feature 2 */}
-            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-              <div className="text-blue-400 mb-4">
-                <FiSearch className="text-3xl" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">Advanced Search</h3>
-              <p className="text-gray-400">
-                Quickly find users by searching through usernames or email addresses with real-time filtering.
-              </p>
-            </div>
+        {/* Available Endpoints */}
+        <div className="rounded-lg p-6 border border-zinc-700">
+          <h2 className="text-xl font-semibold text-gray-100 mb-4">Available Endpoints</h2>
+          <ul className="space-y-4">
+            <li className="bg-zinc-900 rounded-md p-4">
+              <p className="text-gray-100 font-medium">Register User</p>
+              <p className="text-gray-300">POST: {'{Base_url}'}/{'{api_key}'}/user/register – Create a new user account by providing name, email, and password.</p>
+            </li>
+            <li className="bg-zinc-900 rounded-md p-4">
+              <p className="text-gray-100 font-medium">Login User</p>
+              <p className="text-gray-300">POST: {'{Base_url}'}/{'{api_key}'}/user/login – Authenticate an existing user and receive an access token.</p>
+            </li>
+            <li className="bg-zinc-900 rounded-md p-4">
+              <p className="text-gray-100 font-medium">Show Users</p>
+              <p className="text-gray-300">GET: {'{Base_url}'}/{'{api_key}'}/user/user_id – Retrieve a list of all registered users.</p>
+            </li>
+            <li className="bg-zinc-900 rounded-md p-4">
+              <p className="text-gray-100 font-medium">Delete User</p>
+              <p className="text-gray-300">DELETE:  {'{Base_url}'}/{'{api_key}'}/user/delete/{'{id}'} – Delete a user by their email.</p>
+            </li>
+          </ul>
+        </div>
 
-            {/* Feature 3 */}
-            <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition-colors">
-              <div className="text-blue-400 mb-4">
-                <FiTrash2 className="text-3xl" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-3">User Management</h3>
-              <p className="text-gray-400">
-                Securely delete users with confirmation dialogs and visual feedback during the deletion process.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* How to use */}
+        <div className="rounded-lg p-6 border border-zinc-700">
+          <h2 className="text-xl font-semibold text-gray-100 mb-2">
+            How to use these APIs?
+          </h2>
+          <ol className="list-decimal list-inside space-y-2 text-gray-300">
+            <li>Register an account to start using the APIs.</li>
+            <li>Login to get your JWT token for protected routes.</li>
+            <li>Integrate endpoints in your frontend or backend projects for authentication and user management.</li>
+          </ol>
+        </div>
 
-        {/* How to Use */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-bold text-white border-b border-gray-700 pb-2 mb-6">How To Use</h2>
-          
-          <div className="space-y-8">
-            {/* Step 1 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="bg-blue-900/20 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-blue-400 font-bold text-xl">1</span>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-3">Accessing Users</h3>
-                <p className="text-gray-400 mb-4">
-                  Navigate to the <span className="text-blue-400">Users</span> page to see all registered users. The system automatically loads all available user accounts.
-                </p>
-                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 text-sm">
-                  <div className="flex items-center text-gray-400 mb-2">
-                    <FiUser className="mr-2 text-blue-400" />
-                    <span>Each user card displays username, email, and ID</span>
-                  </div>
-                  <div className="flex items-center text-gray-400">
-                    <FiMail className="mr-2 text-blue-400" />
-                    <span>Email addresses are shown with proper formatting</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Who can use */}
+        <div className="rounded-lg p-6 border border-zinc-700">
+          <h2 className="text-xl font-semibold text-gray-100 mb-2">
+            Who can use these APIs?
+          </h2>
+          <p className="text-gray-300">
+            Frontend developers, backend developers, and full-stack developers can integrate these APIs to build powerful projects faster without worrying about authentication logic.
+          </p>
+        </div>
 
-            {/* Step 2 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="bg-blue-900/20 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-blue-400 font-bold text-xl">2</span>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-3">Searching Users</h3>
-                <p className="text-gray-400 mb-4">
-                  Use the search bar at the top to filter users by their username or email address.
-                </p>
-                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-                  <div className="relative max-w-md">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                    <input
-                      type="text"
-                      placeholder="Search users..."
-                      className="pl-10 w-full bg-gray-700 border border-gray-600 rounded-lg py-2 px-4 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Important notes */}
+        <div className="rounded-lg p-6 border border-zinc-700">
+          <h2 className="text-xl font-semibold text-gray-100 mb-2">Important Notes</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-300">
+            <li>Always include your JWT token in the Authorization header for protected routes.</li>
+            <li>Deleting a user is permanent and cannot be undone.</li>
+          </ul>
+        </div>
 
-            {/* Step 3 */}
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="bg-blue-900/20 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-blue-400 font-bold text-xl">3</span>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-3">Deleting Users</h3>
-                <p className="text-gray-400 mb-4">
-                  To remove a user account, click the "Delete User" button on their card. This action requires confirmation.
-                </p>
-                <div className="bg-gray-800 p-4 rounded-lg border border-gray-700 flex flex-col space-y-4">
-                  <div className="flex items-center text-gray-400">
-                    <FiAlertTriangle className="mr-2 text-yellow-400" />
-                    <span>You'll need to confirm the deletion in a popup dialog</span>
-                  </div>
-                  <div className="flex items-center text-gray-400">
-                    <FiCheck className="mr-2 text-green-400" />
-                    <span>Successful deletions are immediately reflected in the UI</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Troubleshooting */}
-        <section className="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
-          <h2 className="text-2xl font-bold text-white border-b border-gray-700 pb-2 mb-6">Troubleshooting</h2>
-          
-          <div className="space-y-4">
-            <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-              <h3 className="text-lg font-semibold text-red-400 mb-2">Error Loading Users</h3>
-              <p className="text-gray-400 mb-3">
-                If you see an error message when loading users:
-              </p>
-              <ul className="list-disc list-inside text-gray-400 space-y-1">
-                <li>Check your internet connection</li>
-                <li>Ensure the backend server is running</li>
-                <li>Try refreshing the page</li>
-                <li>Contact support if the issue persists</li>
-              </ul>
-            </div>
-
-            <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-              <h3 className="text-lg font-semibold text-red-400 mb-2">Delete Not Working</h3>
-              <p className="text-gray-400 mb-3">
-                If you can't delete a user:
-              </p>
-              <ul className="list-disc list-inside text-gray-400 space-y-1">
-                <li>Verify you have proper permissions</li>
-                <li>Check if the user still exists</li>
-                <li>Look for error messages in the console</li>
-                <li>Try again after refreshing the page</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="mt-16 text-center text-gray-500 border-t border-gray-800 pt-8">
-          <p>User Management System v1.0</p>
-          <p className="mt-2">For support, contact: admin@yourdomain.com</p>
-        </footer>
+        {/* Final CTA */}
+        <div className="p-6 text-center">
+          <h2 className="text-2xl font-bold text-gray-100 mb-2">
+            Start integrating now
+          </h2>
+          <p className="text-gray-300">
+            Use these APIs to build scalable and secure applications without reinventing authentication.
+          </p>
+        </div>
       </div>
     </div>
   );

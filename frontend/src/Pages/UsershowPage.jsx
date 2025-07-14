@@ -1,163 +1,219 @@
-import React, { useEffect, useState } from "react";
-import { getAllUsers } from "../context/Auth";
-import { 
-  MagnifyingGlassIcon,
-  ClockIcon,
-  CpuChipIcon,
-  ArrowUpRightIcon,
-  CheckCircleIcon,
-  EllipsisHorizontalIcon
-} from "@heroicons/react/24/outline";
+// src/pages/UsershowPage.jsx
 
-const UsersDashboard = () => {
+import React, { useEffect, useState } from "react";
+import { getAllUsers, deleteUser } from "../context/Auth";
+import {
+  FiUser,
+  FiMail,
+  FiTrash2,
+  FiSearch,
+  FiAlertCircle,
+  FiLoader,
+} from "react-icons/fi";
+
+const UsershowPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
 
+  // Load users on page load
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const data = await getAllUsers();
-        const usersData = Array.isArray(data) ? data : data?.data || data?.users || [];
-        setUsers(usersData);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUsers();
+    const cachedUsers = localStorage.getItem("all_users");
+    if (cachedUsers) {
+      setUsers(JSON.parse(cachedUsers));
+      setLoading(false);
+    } else {
+      fetchUsers();
+    }
   }, []);
 
-  const filteredUsers = users.filter(user =>
-    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  // Fetch all users from API
+  const fetchUsers = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await getAllUsers();
+      console.log("Fetched users data:", data);
+
+      // Ensure data structure is an array
+      const usersData = Array.isArray(data)
+        ? data
+        : data?.data || data?.users || [];
+
+      setUsers(usersData);
+      localStorage.setItem("all_users", JSON.stringify(usersData));
+    } catch (err) {
+      console.error("Fetch users error:", err);
+      setError(err.message || "Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle user deletion
+  const handleDelete = async (userId) => {
+    try {
+      setDeletingId(userId);
+      await deleteUser(userId);
+
+      const updatedUsers = users.filter((user) => user.id !== userId);
+      setUsers(updatedUsers);
+      localStorage.setItem("all_users", JSON.stringify(updatedUsers));
+    } catch (err) {
+      console.error("Delete user error:", err);
+      setError(err.message || "Failed to delete user");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // Filter users by search term
+  const filteredUsers = users.filter(
+    (user) =>
+      user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-full p-20">
+        <FiLoader className="animate-spin text-4xl text-zinc-800 mb-4" />
+        <p className="text-gray-400">Loading users...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="max-w-md w-full bg-zinc-900 rounded-lg shadow-xl overflow-hidden border-2 border-zinc-700">
+          <div className="p-6">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <FiAlertCircle className="h-6 w-6 text-red-700" />
+              </div>
+              <div className="ml-3">
+                <h3 className="text-lg font-medium text-gray-100">Error Occurred</h3>
+                <div className="mt-2 text-sm text-gray-300">
+                  <p>{error}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="px-6 py-4 flex justify-end space-x-3">
+            <button
+              onClick={() => setError("")}
+              className="px-4 py-2 text-sm font-medium text-gray-300 bg-zinc-700 rounded-md hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-150"
+            >
+              Continue
+            </button>
+            <button
+              onClick={fetchUsers}
+              className="px-4 py-2 text-sm font-medium text-gray-100 bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main render
   return (
-    <div className="bg-gray-50 min-h-screen p-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Users Dashboard</h1>
-        <div className="flex items-center text-sm text-gray-500">
-          <ClockIcon className="h-4 w-4 mr-1" />
-          <span>Last 30 days • Updated just now</span>
+    <div className="min-h-screen text-gray-100">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+        {/* Header */}
+        <div className="p-0 mb-8">
+          <h1 className="text-3xl font-semibold">All Registered Users</h1>
+          <p className="text-gray-300 mt-2">View and manage all users registered on the platform. You can search, view details, or delete users as needed.</p>
         </div>
-      </div>
-
-      {/* Search Bar */}
-      <div className="relative mb-8">
-        <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search Users..."
-          className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-
-      {/* Usage Stats */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Usage</h2>
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
-            <div className="flex-1">
-              <div className="flex justify-between">
-                <span className="font-medium">Active Users</span>
-                <span className="text-gray-500">{users.length} / ∞</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                <div 
-                  className="bg-blue-500 h-2 rounded-full" 
-                  style={{ width: `${Math.min(100, users.length)}%` }}
-                ></div>
-              </div>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+          <div className="w-full md:w-2/3">
+            <div className="relative">
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="w-full pl-10 pr-4 py-2 bg-zinc-950 border border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-600 text-gray-300"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
           </div>
-          <div className="flex items-center">
-            <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
-            <div className="flex-1">
-              <div className="flex justify-between">
-                <span className="font-medium">API Requests</span>
-                <span className="text-gray-500">23K / 1M</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                <div className="bg-green-500 h-2 rounded-full" style={{ width: '23%' }}></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center">
-            <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
-            <div className="flex-1">
-              <div className="flex justify-between">
-                <span className="font-medium">Data Storage</span>
-                <span className="text-gray-500">2.04 GB / 100 GB</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '2.04%' }}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          {filteredUsers.slice(0, 2).map(user => (
-            <div key={user.id} className="flex items-start">
-              <div className="bg-blue-100 p-2 rounded-lg mr-4">
-                <CpuChipIcon className="h-5 w-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <span className="font-medium">{user.username || "Anonymous"}</span>
-                  <span className="text-sm text-gray-500">Just now</span>
-                </div>
-                <p className="text-gray-600 text-sm">{user.email}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Users List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Users</h2>
-          <button className="text-sm text-blue-600 hover:text-blue-800">
-            View All
-          </button>
+          <h1 className="text-2xl font-bold text-gray-100">
+            All Users{" "}
+            <span className="text-blue-400">({filteredUsers.length})</span>
+          </h1>
         </div>
 
-        <div className="space-y-4">
-          {filteredUsers.slice(0, 5).map(user => (
-            <div key={user.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
-              <div className="flex items-center">
-                <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
-                <div>
-                  <p className="font-medium text-gray-900">{user.username || "No username"}</p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
+        {/* User Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <div
+                key={user.id || user.email}
+                className="bg-zinc-950 rounded-lg shadow-lg border border-zinc-800 hover:border-zinc-600 transition-colors cursor-pointer"
+              >
+                <div className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-zinc-500/30 p-3 rounded-full mr-4">
+                      <FiUser className="text-gray-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-200">
+                        {user.username || "No username"}
+                      </h3>
+                      <div className="flex items-center text-gray-300">
+                        <FiMail className="mr-2 text-gray-500" />
+                        <span className="break-all">{user.email || "No email"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  
+
+                  <button
+                    onClick={() => handleDelete(user.id)}
+                    disabled={deletingId === user.id}
+                    className="w-auto flex float-end mb-4 items-center justify-center py-2 px-4 bg-red-800 hover:bg-red-600 rounded-md text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {deletingId === user.id ? (
+                      <>
+                        <FiLoader className="animate-spin mr-2" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <FiTrash2 className="mr-2" />
+                        Delete User
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded mr-3">
-                  ID: {user.id}
-                </span>
-                <button className="text-gray-400 hover:text-gray-600">
-                  <EllipsisHorizontalIcon className="h-5 w-5" />
-                </button>
-              </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12 bg-gray-900 rounded-lg border border-gray-800">
+              <FiUser className="mx-auto text-gray-600 text-4xl mb-4" />
+              <h3 className="text-xl font-medium text-gray-300">
+                {searchTerm ? "No users found" : "No users available"}
+              </h3>
+              <p className="text-gray-500 mt-2">
+                {searchTerm
+                  ? "Try a different search"
+                  : "Check your server connection"}
+              </p>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default UsersDashboard;
+export default UsershowPage;
