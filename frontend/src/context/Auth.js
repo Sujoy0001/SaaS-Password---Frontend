@@ -63,15 +63,13 @@ export const getClientEmail = () => {
   return localStorage.getItem('clientEmail');
 };
 
+// ✅ Get client by email
 export const getClientByEmail = async (email) => {
-  const token = getToken();
   try {
-    const response = await axios.get(`${API_BASE_URL}/clients/${encodeURIComponent(email)}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await api.get(`/clients/${email}`);
     return response.data;
   } catch (error) {
-    throw error.response?.data || error;
+    console.error("Error fetching client data:", error);
+    throw error;
   }
 };
-
