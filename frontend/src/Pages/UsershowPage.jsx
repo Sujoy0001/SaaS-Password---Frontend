@@ -17,34 +17,34 @@ const UsershowPage = () => {
   const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
-    const cachedUsers = localStorage.getItem("all_users");
-    if (cachedUsers) {
-      setUsers(JSON.parse(cachedUsers));
-      setLoading(false);
-    } else {
-      fetchUsers();
-    }
+    const fetchUsers = async () => {
+      try {
+        const data = await getAllUsers();
+
+        // Adapt to different backend response formats
+        let usersData = [];
+        if (Array.isArray(data)) {
+          usersData = data;
+        } else if (data?.data) {
+          usersData = data.data;
+        } else if (data?.users) {
+          usersData = data.users;
+        } else {
+          throw new Error("Invalid users data format");
+        }
+
+        setUsers(usersData);
+        setError("");
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.message || "Failed to load users");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const data = await getAllUsers();
-      let usersData = [];
-      if (Array.isArray(data)) usersData = data;
-      else if (data?.data) usersData = data.data;
-      else if (data?.users) usersData = data.users;
-      else throw new Error("Invalid users data format");
-
-      setUsers(usersData);
-      localStorage.setItem("all_users", JSON.stringify(usersData));
-      setError("");
-    } catch (err) {
-      setError(err.message || "Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async (userId) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
@@ -52,10 +52,9 @@ const UsershowPage = () => {
     try {
       setDeletingId(userId);
       await deleteUser(userId);
-      const updatedUsers = users.filter((user) => user.id !== userId);
-      setUsers(updatedUsers);
-      localStorage.setItem("all_users", JSON.stringify(updatedUsers));
+      setUsers(users.filter((user) => user.id !== userId));
     } catch (err) {
+      console.error("Delete error:", err);
       setError(err.message);
     } finally {
       setDeletingId(null);
@@ -88,7 +87,7 @@ const UsershowPage = () => {
           <p className="text-gray-300 mb-4">{error}</p>
           <div className="flex space-x-3">
             <button
-              onClick={fetchUsers}
+              onClick={() => window.location.reload()}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
             >
               Retry

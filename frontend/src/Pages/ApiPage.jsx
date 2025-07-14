@@ -1,3 +1,5 @@
+// src/pages/ApiPage.jsx
+
 import React, { useEffect, useState } from "react";
 import { getClientByEmail } from "../context/Auth";
 import {
@@ -15,27 +17,23 @@ const ApiPage = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const cachedClient = localStorage.getItem("client_data");
-    if (cachedClient) {
-      setClientData(JSON.parse(cachedClient));
-      setLoading(false);
-    } else {
-      fetchClientData();
-    }
-  }, []);
+    const fetchClientData = async () => {
+      try {
+        const data = await getClientByEmail();
+        setClientData(data);
+      } catch (err) {
+        setError(err.message || "Failed to fetch client data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchClientData = async () => {
-    setLoading(true);
-    try {
-      const data = await getClientByEmail();
-      setClientData(data);
-      localStorage.setItem("client_data", JSON.stringify(data));
-    } catch (err) {
-      setError(err.message || "Failed to fetch client data. Please try again later.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const timer = setTimeout(() => {
+      fetchClientData();
+    }, 300); // shorter delay for faster UX
+
+    return () => clearTimeout(timer);
+  }, []);
 
   if (loading)
     return (
@@ -57,7 +55,7 @@ const ApiPage = () => {
           </div>
           <p className="text-gray-300 mb-4">{error}</p>
           <button
-            onClick={fetchClientData}
+            onClick={() => window.location.reload()}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition duration-200"
           >
             Retry
