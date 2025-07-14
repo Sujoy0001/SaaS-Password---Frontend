@@ -198,7 +198,7 @@ const UsershowPage = () => {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12 bg-gray-900 rounded-lg border border-gray-800">
+            <div className="col-span-full text-center py-12 bg-zinc-900 rounded-lg border border-gray-800">
               <FiUser className="mx-auto text-gray-600 text-4xl mb-4" />
               <h3 className="text-xl font-medium text-gray-300">
                 {searchTerm ? "No users found" : "No users available"}
