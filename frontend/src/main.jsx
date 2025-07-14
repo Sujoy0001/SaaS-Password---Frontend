@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       element: <Layout2 />,
       children: [
         { index: true, element: (<ProtectRoute><ApiLinks /></ProtectRoute>) },
-        { path: "user/all", element: (<ProtectRoute><AllUsers /></ProtectRoute>) },  
+        { path: "users", element: (<ProtectRoute><AllUsers /></ProtectRoute>) },  
         { path: "overview", element: (<ProtectRoute><Overview /></ProtectRoute>) },  
         { path: "profile", element: (<ProtectRoute><ProfilePage /></ProtectRoute>) }, 
       ],

@@ -1,209 +1,163 @@
-// src/pages/UsershowPage.jsx
-
 import React, { useEffect, useState } from "react";
-import { getAllUsers, deleteUser } from "../context/Auth";
-import {
-  FiUser,
-  FiMail,
-  FiTrash2,
-  FiSearch,
-  FiAlertCircle,
-  FiLoader,
-} from "react-icons/fi";
+import { getAllUsers } from "../context/Auth";
+import { 
+  MagnifyingGlassIcon,
+  ClockIcon,
+  CpuChipIcon,
+  ArrowUpRightIcon,
+  CheckCircleIcon,
+  EllipsisHorizontalIcon
+} from "@heroicons/react/24/outline";
 
-const UsershowPage = () => {
+const UsersDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [deletingId, setDeletingId] = useState(null);
 
-  // Load users on page load
   useEffect(() => {
-    const cachedUsers = localStorage.getItem("all_users");
-    if (cachedUsers) {
-      setUsers(JSON.parse(cachedUsers));
-      setLoading(false);
-    } else {
-      fetchUsers();
-    }
+    const fetchUsers = async () => {
+      try {
+        const data = await getAllUsers();
+        const usersData = Array.isArray(data) ? data : data?.data || data?.users || [];
+        setUsers(usersData);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-  // Fetch all users from API
-  const fetchUsers = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const data = await getAllUsers();
-      console.log("Fetched users data:", data);
-
-      // Ensure data structure is an array
-      const usersData = Array.isArray(data)
-        ? data
-        : data?.data || data?.users || [];
-
-      setUsers(usersData);
-      localStorage.setItem("all_users", JSON.stringify(usersData));
-    } catch (err) {
-      console.error("Fetch users error:", err);
-      setError(err.message || "Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle user deletion
-  const handleDelete = async (userId) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-
-    try {
-      setDeletingId(userId);
-      await deleteUser(userId);
-
-      const updatedUsers = users.filter((user) => user.id !== userId);
-      setUsers(updatedUsers);
-      localStorage.setItem("all_users", JSON.stringify(updatedUsers));
-    } catch (err) {
-      console.error("Delete user error:", err);
-      setError(err.message || "Failed to delete user");
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  // Filter users by search term
-  const filteredUsers = users.filter(
-    (user) =>
-      user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(user =>
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black">
-        <FiLoader className="animate-spin text-4xl text-blue-500 mb-4" />
-        <p className="text-gray-400">Loading users...</p>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black p-4">
-        <div className="max-w-md w-full bg-gray-900 border-l-4 border-red-500 p-4 rounded-lg">
-          <div className="flex items-center mb-2">
-            <FiAlertCircle className="text-red-400 mr-2" />
-            <h3 className="text-lg font-medium text-red-400">Error</h3>
-          </div>
-          <p className="text-gray-300 mb-4">{error}</p>
-          <div className="flex space-x-3">
-            <button
-              onClick={fetchUsers}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              Retry
-            </button>
-            <button
-              onClick={() => setError("")}
-              className="px-4 py-2 bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition"
-            >
-              Continue
-            </button>
-          </div>
+  return (
+    <div className="bg-gray-50 min-h-screen p-6">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Users Dashboard</h1>
+        <div className="flex items-center text-sm text-gray-500">
+          <ClockIcon className="h-4 w-4 mr-1" />
+          <span>Last 30 days • Updated just now</span>
         </div>
       </div>
-    );
-  }
 
-  // Main render
-  return (
-    <div className="min-h-screen bg-black text-gray-200 p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-          <div className="w-full md:w-1/3">
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search users..."
-                className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-200"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+      {/* Search Bar */}
+      <div className="relative mb-8">
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Search Users..."
+          className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Usage Stats */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Usage</h2>
+        <div className="space-y-4">
+          <div className="flex items-center">
+            <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <span className="font-medium">Active Users</span>
+                <span className="text-gray-500">{users.length} / ∞</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                <div 
+                  className="bg-blue-500 h-2 rounded-full" 
+                  style={{ width: `${Math.min(100, users.length)}%` }}
+                ></div>
+              </div>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-white">
-            All Users{" "}
-            <span className="text-blue-400">({filteredUsers.length})</span>
-          </h1>
+          <div className="flex items-center">
+            <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <span className="font-medium">API Requests</span>
+                <span className="text-gray-500">23K / 1M</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                <div className="bg-green-500 h-2 rounded-full" style={{ width: '23%' }}></div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
+            <div className="flex-1">
+              <div className="flex justify-between">
+                <span className="font-medium">Data Storage</span>
+                <span className="text-gray-500">2.04 GB / 100 GB</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '2.04%' }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+        <div className="space-y-4">
+          {filteredUsers.slice(0, 2).map(user => (
+            <div key={user.id} className="flex items-start">
+              <div className="bg-blue-100 p-2 rounded-lg mr-4">
+                <CpuChipIcon className="h-5 w-5 text-blue-600" />
+              </div>
+              <div className="flex-1">
+                <div className="flex justify-between">
+                  <span className="font-medium">{user.username || "Anonymous"}</span>
+                  <span className="text-sm text-gray-500">Just now</span>
+                </div>
+                <p className="text-gray-600 text-sm">{user.email}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Users List */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Users</h2>
+          <button className="text-sm text-blue-600 hover:text-blue-800">
+            View All
+          </button>
         </div>
 
-        {/* User Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredUsers.length > 0 ? (
-            filteredUsers.map((user) => (
-              <div
-                key={user.id || user.email}
-                className="bg-gray-900 rounded-lg shadow-lg border border-gray-800 hover:border-blue-600 transition-colors"
-              >
-                <div className="p-6">
-                  <div className="flex items-center mb-4">
-                    <div className="bg-blue-800/30 p-3 rounded-full mr-4">
-                      <FiUser className="text-blue-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">
-                        {user.username || "No username"}
-                      </h3>
-                      <p className="text-sm text-gray-400">ID: {user.id}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center mb-6 text-gray-300">
-                    <FiMail className="mr-2 text-gray-500" />
-                    <span className="break-all">{user.email || "No email"}</span>
-                  </div>
-
-                  <button
-                    onClick={() => handleDelete(user.id)}
-                    disabled={deletingId === user.id}
-                    className="w-full flex items-center justify-center py-2 px-4 bg-red-700 hover:bg-red-600 rounded-md text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {deletingId === user.id ? (
-                      <>
-                        <FiLoader className="animate-spin mr-2" />
-                        Deleting...
-                      </>
-                    ) : (
-                      <>
-                        <FiTrash2 className="mr-2" />
-                        Delete User
-                      </>
-                    )}
-                  </button>
+        <div className="space-y-4">
+          {filteredUsers.slice(0, 5).map(user => (
+            <div key={user.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
+              <div className="flex items-center">
+                <CheckCircleIcon className="h-5 w-5 text-gray-400 mr-3" />
+                <div>
+                  <p className="font-medium text-gray-900">{user.username || "No username"}</p>
+                  <p className="text-sm text-gray-500">{user.email}</p>
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-12 bg-gray-900 rounded-lg border border-gray-800">
-              <FiUser className="mx-auto text-gray-600 text-4xl mb-4" />
-              <h3 className="text-xl font-medium text-gray-300">
-                {searchTerm ? "No users found" : "No users available"}
-              </h3>
-              <p className="text-gray-500 mt-2">
-                {searchTerm
-                  ? "Try a different search"
-                  : "Check your server connection"}
-              </p>
+              <div className="flex items-center">
+                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded mr-3">
+                  ID: {user.id}
+                </span>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <EllipsisHorizontalIcon className="h-5 w-5" />
+                </button>
+              </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
     </div>
   );
 };
 
-export default UsershowPage;
+export default UsersDashboard;

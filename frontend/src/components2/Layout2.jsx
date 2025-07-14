@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import TopNav from "../components/TopNav";
 import Navbar2 from "../components/Navbar2";
-import Footer from "../components/Footer";
+import Footer from "../components/Footer2";
 
 export default function Layout2() {
   return (
