@@ -11,7 +11,7 @@ const Footer = () => {
             <Link to="/index" className="text-gray-400 hover:text-white text-sm transition-colors">
               Home
             </Link>
-            <Link to="/index/overview" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link to="#" className="text-gray-400 hover:text-white text-sm transition-colors">
               Docs
             </Link>
             <Link to="#" className="text-gray-400 hover:text-white text-sm transition-colors">

@@ -24,7 +24,7 @@ const Navbar = () => {
             {/* Center - Navigation links */}
             <div className="hidden md:flex items-center space-x-6 ml-8">
               <Link
-                to="/docs"
+                to="#"
                 className={`flex px-2 py-2 justify-center items-center rounded-md transition-all duration-300 text-sm font-medium ${
                   isActive('/docs')
                     ? 'bg-slate-200 text-black'
@@ -35,7 +35,7 @@ const Navbar = () => {
               </Link>
 
               <Link
-                to="/about"
+                to="#"
                 className={`flex px-2 py-2 justify-center items-center rounded-md transition-all duration-300 text-sm font-medium ${
                   isActive('/about')
                     ? 'bg-slate-200 text-black'
