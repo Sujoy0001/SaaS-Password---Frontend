@@ -19,7 +19,7 @@ const UsershowPage = () => {
   const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
-    const cachedUsers = localStorage.getItem("all_users");
+    const cachedUsers = localStorage.getItem();
     if (cachedUsers) {
       setUsers(JSON.parse(cachedUsers));
       setLoading(false);
