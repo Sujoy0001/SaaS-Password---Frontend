@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerClient } from '../context/Auth';
+import { ArrowRightOnRectangleIcon, UserPlusIcon } from '@heroicons/react/24/outline';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -36,81 +37,99 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create a new account
+    <div className="min-h-full flex items-center justify-center p-4 sm:p-6">
+      <div className="w-full max-w-lg shadow-xl overflow-hidden p-8 sm:p-10">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-100">
+            Create your account
           </h2>
+          <p className="text-gray-400 mt-2">
+            Get started with your API keys today
+          </p>
         </div>
+
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span className="block sm:inline">{error}</span>
+          <div className="mb-6 bg-red-900/50 border border-red-700 text-red-200 px-4 py-3 rounded-lg" role="alert">
+            {error}
           </div>
         )}
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
             <div>
-              <label htmlFor="username" className="sr-only">Username</label>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-1">
+                Username
+              </label>
               <input
                 id="username"
                 name="username"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
+                className="w-full px-4 py-3 bg-zinc-800 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Enter your username"
                 value={formData.username}
                 onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="email" className="sr-only">Email address</label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
+                Email address
+              </label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                className="w-full px-4 py-3 bg-zinc-800 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="sr-only">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
+                Password
+              </label>
               <input
                 id="password"
                 name="password"
                 type="password"
-                autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                className="w-full px-4 py-3 bg-zinc-800 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
               />
             </div>
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {isLoading ? 'Registering...' : 'Register'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full flex justify-center items-center py-3 px-4 rounded-lg font-medium text-white bg-purple-800 hover:bg-purple-900 transition-colors ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+          >
+            {isLoading ? (
+              'Creating account...'
+            ) : (
+              <>
+                <UserPlusIcon className="w-5 h-5 mr-2" />
+                Register
+              </>
+            )}
+          </button>
         </form>
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
+
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-400">
             Already have an account?{' '}
-            <button 
+            <button
               onClick={() => navigate('/login')}
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="text-purple-400 hover:text-purple-300 font-medium inline-flex items-center"
             >
-              Sign in
+              Sign in <ArrowRightOnRectangleIcon className="w-4 h-4 ml-1" />
             </button>
           </p>
         </div>

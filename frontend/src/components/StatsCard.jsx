@@ -12,10 +12,10 @@ const StatsCard = ({ stats }) => {
 
   useEffect(() => {
     const targetStats = {
-      total_users: stats?.total_users || 3420,
-      total_apis_secured: stats?.total_apis_secured || 12500,
-      api_calls_today: stats?.api_calls_today || 1250000,
-      blocked_threats: stats?.blocked_threats || 28400
+      total_users: stats?.total_users || 342,
+      total_apis_secured: stats?.total_apis_secured || 1250,
+      api_calls_today: stats?.api_calls_today || 1740,
+      blocked_threats: stats?.blocked_threats || 273
     };
 
     const duration = 2;
