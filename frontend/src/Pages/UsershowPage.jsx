@@ -1,3 +1,5 @@
+// src/pages/UsershowPage.jsx
+
 import React, { useEffect, useState } from "react";
 import { getAllUsers, deleteUser } from "../context/Auth";
 import {
@@ -20,8 +22,8 @@ const UsershowPage = () => {
     const fetchUsers = async () => {
       try {
         const data = await getAllUsers();
+        console.log("Fetched users data:", data);
 
-        // Adapt to different backend response formats
         let usersData = [];
         if (Array.isArray(data)) {
           usersData = data;
@@ -37,7 +39,7 @@ const UsershowPage = () => {
         setError("");
       } catch (err) {
         console.error("Fetch error:", err);
-        setError(err.message || "Failed to load users");
+        setError(err.detail || err.message || "Failed to load users");
       } finally {
         setLoading(false);
       }
@@ -55,7 +57,7 @@ const UsershowPage = () => {
       setUsers(users.filter((user) => user.id !== userId));
     } catch (err) {
       console.error("Delete error:", err);
-      setError(err.message);
+      setError(err.detail || err.message || "Delete failed");
     } finally {
       setDeletingId(null);
     }
