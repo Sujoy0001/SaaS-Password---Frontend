@@ -119,23 +119,31 @@ export const getAllUsers = async () => {
 
 export const deleteUser = async (userId) => {
   try {
-    const api = getApi();
+    // Input validation
+    if (!userId || typeof userId !== 'number') {
+      throw new Error('Invalid user ID - must be a number');
+    }
+
+    const api = getApi(); // Should return the api_key that matches {api_key} in route
     const token = getToken();
     if (!token) throw new Error('No auth token found');
 
-    const response = await axios.delete(`${BASE_URL}/${api}/user/delete`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'accept': 'application/json'
-        },
-        data: userId  // Sends just the user ID as raw body (8)
-      }
-    );
+    // Matches FastAPI's expected format: {"user_id": number}
+    const response = await axios.delete(`${BASE_URL}/${api}/user/delete`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      data: { user_id: userId } // Must use this exact key name
+    });
+
     return response.data;
   } catch (error) {
-    const errorMessage = error.response?.data?.detail || error.message || 'Failed to delete user';
-    throw new Error(errorMessage);
+    // Enhanced error handling matching FastAPI's response format
+    const status = error.response?.status;
+    const detail = error.response?.data?.detail || 
+                  `Failed to delete user (${status || 'no status'})`;
+    
+    throw new Error(detail);
   }
 };
