@@ -38,7 +38,7 @@ const router = createBrowserRouter([
         { path: "users", element: (<ProtectRoute><AllUsers /></ProtectRoute>) },  
         { path: "overview", element: (<ProtectRoute><Overview /></ProtectRoute>) },  
         { path: "profile", element: (<ProtectRoute><ProfilePage /></ProtectRoute>) }, 
-        { path: "contact", element: <ContactPage /> },  
+        { path: "contact", element: (<ProtectRoute><ContactPage /></ProtectRoute>) },  
       ],
     },
 ]);
