@@ -115,16 +115,22 @@ export const getAllUsers = async () => {
   }
 };
 
+
+
 export const deleteUser = async (userId) => {
   try {
     const api = getApi();
     const token = getToken();
     if (!token) throw new Error('No auth token found.');
 
-    const response = await axios.delete(`${BASE_URL}/${api}/user/delete/${userId}`, {
+    const response = await axios.delete(`${BASE_URL}/${api}/user/delete`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
+      data: {
+        userId: userId
+      }
     });
     return response.data;
   } catch (error) {

@@ -1,5 +1,3 @@
-// src/pages/UsershowPage.jsx
-
 import React, { useEffect, useState } from "react";
 import { getAllUsers, deleteUser } from "../context/Auth";
 import {
@@ -9,6 +7,7 @@ import {
   FiSearch,
   FiAlertCircle,
   FiLoader,
+  FiRefreshCw
 } from "react-icons/fi";
 
 const UsershowPage = () => {
@@ -17,6 +16,24 @@ const UsershowPage = () => {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [progress, setProgress] = useState(0); // For YouTube-style loading bar
+
+  // YouTube-style loading animation effect
+  useEffect(() => {
+    if (refreshing) {
+      const interval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 200);
+      return () => clearInterval(interval);
+    }
+  }, [refreshing]);
 
   // Load users on page load
   useEffect(() => {
@@ -49,25 +66,39 @@ const UsershowPage = () => {
       setError(err.message || "Failed to load users");
     } finally {
       setLoading(false);
+      setRefreshing(false);
+      setProgress(0);
     }
   };
 
-  // Handle user deletion
-  const handleDelete = async (userId) => {
-    try {
-      setDeletingId(userId);
-      await deleteUser(userId);
-
-      const updatedUsers = users.filter((user) => user.id !== userId);
-      setUsers(updatedUsers);
-      localStorage.setItem("all_users", JSON.stringify(updatedUsers));
-    } catch (err) {
-      console.error("Delete user error:", err);
-      setError(err.message || "Failed to delete user");
-    } finally {
-      setDeletingId(null);
-    }
+  // Handle refresh button click
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setProgress(0);
+    localStorage.removeItem("all_users");
+    setUsers([]);
+    fetchUsers();
   };
+
+// Handle user deletion
+const handleDelete = async (userId) => {
+  try {
+    setDeletingId(userId);
+    await deleteUser(userId);
+
+    const updatedUsers = users.filter((user) => user.id !== userId);
+    setUsers(updatedUsers);
+    localStorage.setItem("all_users", JSON.stringify(updatedUsers));
+  } catch (err) {
+    console.error("Delete user error:", err);
+    setError(err.message || "Failed to delete user");
+    
+    // Optional: Auto-clear error after some time
+    setTimeout(() => setError(""), 5000);
+  } finally {
+    setDeletingId(null);
+  }
+};
 
   // Filter users by search term
   const filteredUsers = users.filter(
@@ -126,6 +157,16 @@ const UsershowPage = () => {
   // Main render
   return (
     <div className="min-h-full text-gray-100">
+      {/* YouTube-style loading bar */}
+      {refreshing && (
+        <div className="fixed top-0 left-0 right-0 h-1 bg-zinc-800 z-50">
+          <div
+            className="h-full bg-red-600 transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <div className="p-0 mb-8">
@@ -145,10 +186,20 @@ const UsershowPage = () => {
               />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-100">
-            All Users{" "}
-            <span className="text-blue-400">({filteredUsers.length})</span>
-          </h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold text-gray-100">
+              All Users{" "}
+              <span className="text-blue-400">({filteredUsers.length})</span>
+            </h1>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FiRefreshCw className={`${refreshing ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* User Cards */}
@@ -174,8 +225,6 @@ const UsershowPage = () => {
                       </div>
                     </div>
                   </div>
-
-                  
 
                   <button
                     onClick={() => handleDelete(user.id)}
@@ -206,7 +255,9 @@ const UsershowPage = () => {
               <p className="text-gray-500 mt-2">
                 {searchTerm
                   ? "Try a different search"
-                  : "Check your server connection"}
+                  : refreshing 
+                    ? "Refreshing data..."
+                    : "Check your server connection"}
               </p>
             </div>
           )}
