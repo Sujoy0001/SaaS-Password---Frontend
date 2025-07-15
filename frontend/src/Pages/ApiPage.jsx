@@ -54,7 +54,6 @@ const ApiPage = () => {
       setCopiedEndpoints(prev => ({ ...prev, [endpoint]: false }));
     }, 2000);
   } catch (err) {
-    console.error('Copy failed:', err);
     // Fallback for older browsers if needed
   }
 };

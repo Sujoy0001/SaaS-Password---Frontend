@@ -133,7 +133,6 @@ export const deleteUser = async (userId) => {
         data: userId  // Sends just the user ID as raw body (8)
       }
     );
-    
     return response.data;
   } catch (error) {
     const errorMessage = error.response?.data?.detail || error.message || 'Failed to delete user';

@@ -52,7 +52,6 @@ const UsershowPage = () => {
     setError("");
     try {
       const data = await getAllUsers();
-      console.log("Fetched users data:", data);
 
       // Ensure data structure is an array
       const usersData = Array.isArray(data)
@@ -62,7 +61,6 @@ const UsershowPage = () => {
       setUsers(usersData);
       localStorage.setItem("all_users", JSON.stringify(usersData));
     } catch (err) {
-      console.error("Fetch users error:", err);
       setError(err.message || "Failed to load users");
     } finally {
       setLoading(false);
@@ -97,7 +95,6 @@ const UsershowPage = () => {
       localStorage.setItem("all_users", JSON.stringify(updatedUsers));
       
     } catch (err) {
-      console.error("Delete user error:", err);
       // Ensure we're displaying a string message
       setError(err.toString()); // This will properly convert Error objects to strings
       

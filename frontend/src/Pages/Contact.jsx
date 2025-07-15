@@ -39,7 +39,6 @@ const ContactPage = () => {
         throw new Error('Form submission failed');
       }
     } catch (error) {
-      console.error('Error:', error);
       setStatus('error');
     }
   };
