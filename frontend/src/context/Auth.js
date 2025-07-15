@@ -121,19 +121,22 @@ export const deleteUser = async (userId) => {
   try {
     const api = getApi();
     const token = getToken();
-    if (!token) throw new Error('No auth token found.');
+    if (!token) throw new Error('No auth token found');
 
-    const response = await axios.delete(`${BASE_URL}/${api}/user/delete`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      data: {
-        userId: userId
+    const response = await axios.delete(`${BASE_URL}/${api}/user/delete`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'accept': 'application/json'
+        },
+        data: userId  // Sends just the user ID as raw body (8)
       }
-    });
+    );
+    
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || error.message || 'Failed to delete user');
+    const errorMessage = error.response?.data?.detail || error.message || 'Failed to delete user';
+    throw new Error(errorMessage);
   }
 };

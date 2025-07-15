@@ -80,25 +80,32 @@ const UsershowPage = () => {
     fetchUsers();
   };
 
-// Handle user deletion
-const handleDelete = async (userId) => {
-  try {
-    setDeletingId(userId);
-    await deleteUser(userId);
 
-    const updatedUsers = users.filter((user) => user.id !== userId);
-    setUsers(updatedUsers);
-    localStorage.setItem("all_users", JSON.stringify(updatedUsers));
-  } catch (err) {
-    console.error("Delete user error:", err);
-    setError(err.message || "Failed to delete user");
-    
-    // Optional: Auto-clear error after some time
-    setTimeout(() => setError(""), 5000);
-  } finally {
-    setDeletingId(null);
-  }
-};
+  const handleDelete = async (userId) => {
+    try {
+      setDeletingId(userId);
+      
+      const userExists = users.some(user => user.id === userId);
+      if (!userExists) {
+        throw new Error('User not found in local data');
+      }
+
+      await deleteUser(userId);
+
+      const updatedUsers = users.filter(user => user.id !== userId);
+      setUsers(updatedUsers);
+      localStorage.setItem("all_users", JSON.stringify(updatedUsers));
+      
+    } catch (err) {
+      console.error("Delete user error:", err);
+      // Ensure we're displaying a string message
+      setError(err.toString()); // This will properly convert Error objects to strings
+      
+      setTimeout(() => setError(""), 5000);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   // Filter users by search term
   const filteredUsers = users.filter(
