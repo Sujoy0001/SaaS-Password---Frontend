@@ -42,7 +42,7 @@ const StatsCard = ({ stats }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="w-full py-12 px-4 sm:px-6 lg:px-8 shadow-sm"
+      className="w-full py-12 px-4 sm:px-6 lg:px-2 shadow-sm"
     >
       <div className="p-0">
         <h2 className="text-3xl font-bold text-gray-200 text-center mb-2">Trusted by Thousands</h2>
@@ -50,7 +50,7 @@ const StatsCard = ({ stats }) => {
           Powering authentication for top development teams worldwide
         </p>
         
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4 md:gap-8 lg:gap-8">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4 md:gap-8 lg:gap-4">
           <StatItem 
             icon={<UsersIcon className="h-8 w-8 text-gray-200" />}
             label="Total Users"
