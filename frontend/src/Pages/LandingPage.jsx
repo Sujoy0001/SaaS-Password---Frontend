@@ -53,7 +53,7 @@ const LandingPage = () => {
 
       <div className="mx-5 md:mx-0 p-8 md:p-12 my-0 rounded-xl border border-zinc-800">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-100 mb-4">Why Choose LockAPI</h2>
+          <h2 className="text-3xl font-bold text-gray-100 mb-4">Why Choose PlugAPI</h2>
           <p className="text-gray-400 max-w-2xl">The simplest way to add authentication to your projects</p>
         </div>
 
