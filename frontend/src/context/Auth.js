@@ -123,7 +123,6 @@ export const deleteUser = async (userId) => {
 
     const response = await axios.delete(`${BASE_URL}/${api}/user/delete/${userId}`, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
     });
