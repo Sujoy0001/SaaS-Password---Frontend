@@ -5,9 +5,9 @@ import StatsCard from "../components/StatsCard";
 
 export default function Layout() {
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-        <main className="max-w-6xl mx-auto mt-16">
+        <main className="max-w-7xl mx-auto flex-grow mt-16">
             <Outlet />
             <StatsCard />
         </main>
