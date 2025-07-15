@@ -50,7 +50,7 @@ const StatsCard = ({ stats }) => {
           Powering authentication for top development teams worldwide
         </p>
         
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4 md:gap-8 lg:gap-8">
           <StatItem 
             icon={<UsersIcon className="h-8 w-8 text-gray-200" />}
             label="Total Users"
