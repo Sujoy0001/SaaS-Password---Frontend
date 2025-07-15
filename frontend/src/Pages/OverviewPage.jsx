@@ -2,7 +2,7 @@ import React from "react";
 
 const OverviewPage = () => {
   return (
-    <div className="min-h-screen text-gray-100">
+    <div className="min-h-full text-gray-100">
       <div className="max-w-6xl mx-auto rounded-lg shadow-lg p-8 space-y-8">
         {/* Heading */}
         <div>

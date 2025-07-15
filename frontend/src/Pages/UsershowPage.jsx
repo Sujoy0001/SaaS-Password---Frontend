@@ -125,7 +125,7 @@ const UsershowPage = () => {
 
   // Main render
   return (
-    <div className="min-h-screen text-gray-100">
+    <div className="min-h-full text-gray-100">
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <div className="p-0 mb-8">
@@ -198,7 +198,7 @@ const UsershowPage = () => {
               </div>
             ))
           ) : (
-            <div className="col-span-full text-center py-12 bg-zinc-950 rounded-lg border border-zinc-800">
+            <div className="col-span-full text-center py-12 bg-black rounded-lg border border-zinc-800">
               <FiUser className="mx-auto text-gray-600 text-4xl mb-4" />
               <h3 className="text-xl font-medium text-gray-300">
                 {searchTerm ? "No users found" : "No users available"}
