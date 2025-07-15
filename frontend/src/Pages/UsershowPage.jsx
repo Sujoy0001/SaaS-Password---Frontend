@@ -90,7 +90,7 @@ const UsershowPage = () => {
   if (error) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        <div className="max-w-md w-full bg-zinc-900 rounded-lg shadow-xl overflow-hidden border-2 border-zinc-700">
+        <div className="max-w-md w-full bg-black rounded-lg shadow-xl overflow-hidden border-2 border-zinc-700">
           <div className="p-6">
             <div className="flex items-start">
               <div className="flex-shrink-0">

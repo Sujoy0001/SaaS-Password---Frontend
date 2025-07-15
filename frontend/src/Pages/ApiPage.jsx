@@ -61,7 +61,7 @@ const ApiPage = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col mx-auto items-center justify-center min-h-full p-20">
+      <div className="flex flex-col mx-auto items-center justify-center min-h-full mt-20">
         <FiLoader className="animate-spin h-12 w-12 text-zinc-800 mb-4" />
         <p className="text-gray-400 text-lg">Loading your API dashboard...</p>
       </div>
