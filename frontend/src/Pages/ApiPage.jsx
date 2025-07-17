@@ -151,18 +151,23 @@ const ApiPage = () => {
                 {clientData.routes && typeof clientData.routes === "object" ? (
                   <div className="space-y-3">
                     {Object.entries(clientData.routes).map(([endpoint, url]) => (
-                  
+                    <div className="p-0">
+                      <div className="group flex items-center gap-2 max-w-full mb-2 overflow-hidden">
+                        {/* Animated dot */}
+                        <div className="flex-shrink-0 h-2 w-2 bg-blue-200 rounded-full "></div>                      
+                        {/* Truncated text with hover effects */}
+                        <span className="font-medium text-gray-100 italic truncate group-hover:text-white group-hover:translate-x-1 transition-all duration-200">
+                          {endpoint}
+                        </span>
+                      </div>
                       <div
                         key={endpoint}
-                        className="group flex flex-col sm:flex-row justify-between items-start sm:items-center bg-zinc-800/50 hover:bg-zinc-900 border border-zinc-700 hover:border-zinc-600 p-3 rounded-lg transition-all duration-200"
+                        className="group flex flex-col sm:flex-row justify-between items-start sm:items-center bg-zinc-800/50 hover:bg-zinc-900 border border-zinc-700 hover:border-zinc-600 p-2 rounded-lg transition-all duration-200"
                       >
                         <div className="mb-2 sm:mb-0 flex-1 min-w-0">
                           <div className="flex items-start">
                             <div className="overflow-hidden">
-                              <span className="font-medium text-gray-100 block truncate italic">
-                                {endpoint}
-                              </span>
-                              <span className="text-blue-400/90 text-sm font-mono break-all hover:text-blue-300 transition-colors ml-5">
+                              <span className="text-blue-400/90 text-sm font-mono break-all hover:text-blue-300 transition-colors ml-3">
                                 {url}
                               </span>
                             </div>
@@ -201,6 +206,7 @@ const ApiPage = () => {
                             </>
                           )}
                         </button>
+                        </div>
                       </div>
                     ))}
                   </div>

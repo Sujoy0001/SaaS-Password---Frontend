@@ -13,7 +13,7 @@ const LandingPage = () => {
           </h1>
 
           <p className="text-lg md:text-xl text-gray-300 mb-8">
-            LockAPI provides ready-to-use authentication endpoints – integrate secure user management in minutes without backend code.
+            PlugAPI provides ready-to-use authentication endpoints – integrate secure user management in minutes without backend code.
           </p>
 
           <div className="flex flex-row justify-start items-center gap-5 md:flex-row md:items-start md:gap-0 md:space-y-0 md:space-x-6 mb-12">

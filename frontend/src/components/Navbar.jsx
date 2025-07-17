@@ -1,6 +1,7 @@
 import React from 'react';
 import { LogIn, UserPlus, BookOpen, Info, Mail } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import logo from "../assets/images/Plugapi_logo.png"
 
 const Navbar = () => {
   const location = useLocation();
@@ -16,9 +17,10 @@ const Navbar = () => {
           {/* Left side - Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link to="/">
-              <h2 className="text-3xl font-bold text-white italic">
+              <h2 className="text-3xl font-bold text-white italic hover:text-zinc-200">
                 PlugAPI
               </h2>
+              {/* <img src={logo} alt="plugapi logo" className="text-3xl h-16 w-auto" /> */}
             </Link>
 
             {/* Center - Navigation links */}
