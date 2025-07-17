@@ -7,7 +7,7 @@ import {
   FiSearch,
   FiAlertCircle,
   FiLoader,
-  FiRefreshCw
+  FiRefreshCw,
 } from "react-icons/fi";
 
 const UsershowPage = () => {
@@ -15,7 +15,7 @@ const UsershowPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [deletingId, setDeletingId] = useState(null);
+  const [deletingEmail, setDeletingEmail] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [progress, setProgress] = useState(0); // For YouTube-style loading bar
 
@@ -23,7 +23,7 @@ const UsershowPage = () => {
   useEffect(() => {
     if (refreshing) {
       const interval = setInterval(() => {
-        setProgress(prev => {
+        setProgress((prev) => {
           if (prev >= 100) {
             clearInterval(interval);
             return 100;
@@ -78,29 +78,26 @@ const UsershowPage = () => {
     fetchUsers();
   };
 
-
-  const handleDelete = async (userId) => {
+  // Delete user by email
+  const handleDelete = async (userEmail) => {
     try {
-      setDeletingId(userId);
-      
-      const userExists = users.some(user => user.id === userId);
+      setDeletingEmail(userEmail);
+
+      const userExists = users.some((user) => user.email === userEmail);
       if (!userExists) {
-        throw new Error('User not found in local data');
+        throw new Error("User not found in local data");
       }
 
-      await deleteUser(userId);
+      await deleteUser(userEmail);
 
-      const updatedUsers = users.filter(user => user.id !== userId);
+      const updatedUsers = users.filter((user) => user.email !== userEmail);
       setUsers(updatedUsers);
       localStorage.setItem("all_users", JSON.stringify(updatedUsers));
-      
     } catch (err) {
-      // Ensure we're displaying a string message
-      setError(err.toString()); // This will properly convert Error objects to strings
-      
+      setError(err.toString());
       setTimeout(() => setError(""), 5000);
     } finally {
-      setDeletingId(null);
+      setDeletingEmail(null);
     }
   };
 
@@ -132,7 +129,9 @@ const UsershowPage = () => {
                 <FiAlertCircle className="h-6 w-6 text-red-700" />
               </div>
               <div className="ml-3">
-                <h3 className="text-lg font-medium text-gray-100">Error Occurred</h3>
+                <h3 className="text-lg font-medium text-gray-100">
+                  Error Occurred
+                </h3>
                 <div className="mt-2 text-sm text-gray-300">
                   <p>{error}</p>
                 </div>
@@ -175,7 +174,10 @@ const UsershowPage = () => {
         {/* Header */}
         <div className="p-0 mb-8">
           <h1 className="text-3xl font-semibold">All Registered Users</h1>
-          <p className="text-gray-300 mt-2">View and manage all users registered on the platform. You can search, view details, or delete users as needed.</p>
+          <p className="text-gray-300 mt-2">
+            View and manage all users registered on the platform. You can
+            search, view details, or delete users as needed.
+          </p>
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
           <div className="w-full md:w-2/3">
@@ -200,7 +202,7 @@ const UsershowPage = () => {
               disabled={refreshing}
               className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <FiRefreshCw className={`${refreshing ? 'animate-spin' : ''}`} />
+              <FiRefreshCw className={`${refreshing ? "animate-spin" : ""}`} />
               Refresh
             </button>
           </div>
@@ -225,17 +227,19 @@ const UsershowPage = () => {
                       </h3>
                       <div className="flex items-center text-gray-300">
                         <FiMail className="mr-2 text-gray-500" />
-                        <span className="break-all">{user.email || "No email"}</span>
+                        <span className="break-all">
+                          {user.email || "No email"}
+                        </span>
                       </div>
                     </div>
                   </div>
 
                   <button
-                    onClick={() => handleDelete(user.id)}
-                    disabled={deletingId === user.id}
+                    onClick={() => handleDelete(user.email)}
+                    disabled={deletingEmail === user.email}
                     className="w-auto flex float-end mb-4 items-center justify-center py-2 px-4 bg-red-800 hover:bg-red-600 rounded-md text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    {deletingId === user.id ? (
+                    {deletingEmail === user.email ? (
                       <>
                         <FiLoader className="animate-spin mr-2" />
                         Deleting...
@@ -259,9 +263,9 @@ const UsershowPage = () => {
               <p className="text-gray-500 mt-2">
                 {searchTerm
                   ? "Try a different search"
-                  : refreshing 
-                    ? "Refreshing data..."
-                    : "Check your server connection"}
+                  : refreshing
+                  ? "Refreshing data..."
+                  : "Check your server connection"}
               </p>
             </div>
           )}

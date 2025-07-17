@@ -117,25 +117,26 @@ export const getAllUsers = async () => {
 
 
 
-export const deleteUser = async (userId) => {
+export const deleteUser = async (userEmail) => {
   try {
     // Input validation
-    if (!userId || typeof userId !== 'number') {
-      throw new Error('Invalid user ID - must be a number');
+    if (!userEmail || typeof userEmail !== 'string') {
+      throw new Error('Invalid user email - must be a string');
     }
 
     const api = getApi(); // Should return the api_key that matches {api_key} in route
     const token = getToken();
     if (!token) throw new Error('No auth token found');
 
-    // Matches FastAPI's expected format: {"user_id": number}
-    const response = await axios.delete(`${BASE_URL}/${api}/user/delete`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      data: { user_id: userId } // Must use this exact key name
-    });
+    // Call DELETE route with user email as path parameter
+    const response = await axios.delete(
+      `${BASE_URL}/${api}/user/delete/${encodeURIComponent(userEmail)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
     return response.data;
   } catch (error) {
@@ -143,7 +144,7 @@ export const deleteUser = async (userId) => {
     const status = error.response?.status;
     const detail = error.response?.data?.detail || 
                   `Failed to delete user (${status || 'no status'})`;
-    
+
     throw new Error(detail);
   }
 };
