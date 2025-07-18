@@ -149,7 +149,7 @@ const ApiPage = () => {
             Use these endpoints in your frontend or backend projects to manage user authentication and data without building your own auth system.
           </p>
           <p className="text-gray-300 ml-8">
-            Remember to include your API token in the Authorization header for protected routes.
+            This allows you to integrate secure user management quickly and focus on your core application features.
           </p>
         </div>
 

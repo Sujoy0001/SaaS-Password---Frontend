@@ -11,7 +11,7 @@ const Footer = () => {
             <Link to="/index" className="text-gray-400 hover:text-white text-sm transition-colors">
               Home
             </Link>
-            <Link to="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link to="/index/docs" className="text-gray-400 hover:text-white text-sm transition-colors">
               Docs
             </Link>
             <Link to="#" className="text-gray-400 hover:text-white text-sm transition-colors">
@@ -41,7 +41,7 @@ const Footer = () => {
             © {new Date().getFullYear()}, PlugAPI Inc.
           </div>
           <div className="flex items-center space-x-4">
-            <span>v1.0.0</span>
+            <span>v1.0.1</span>
             <a href="#" className="hover:text-gray-400 transition-colors">Terms</a>
             <a href="#" className="hover:text-gray-400 transition-colors">Privacy</a>
           </div>

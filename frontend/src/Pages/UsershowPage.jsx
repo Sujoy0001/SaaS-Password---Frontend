@@ -104,8 +104,7 @@ const UsershowPage = () => {
   // Filter users by search term
   const filteredUsers = users.filter(
     (user) =>
-      user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      user.username?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Loading state

@@ -25,7 +25,7 @@ export const loginClient = async (loginData) => {
 };
 
 export const storeToken = (token) => {
-  Cookies.set('authToken', token, { expires: 7 });
+  Cookies.set('authToken', token, { expires: 1 });
 };
 
 export const getToken = () => {
@@ -45,7 +45,7 @@ export const isAuthenticated = () => {
 };
 
 export const storeClientEmail = (email) => {
-  Cookies.set('clientEmail', email, { expires: 7 });
+  Cookies.set('clientEmail', email, { expires: 1 });
 };
 
 export const getClientEmail = () => {

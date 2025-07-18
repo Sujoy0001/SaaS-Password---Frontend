@@ -40,11 +40,11 @@ const OverviewPage = () => {
             </li>
             <li className="bg-zinc-900 rounded-md p-4">
               <p className="text-gray-100 font-medium">Show Users</p>
-              <p className="text-gray-300">GET: {'{Base_url}'}/{'{api_key}'}/user/user_id – Retrieve a list of all registered users.</p>
+              <p className="text-gray-300">GET: {'{Base_url}'}/{'{api_key}'}/user/{'{user_email}'} – Retrieve a list of all registered users.</p>
             </li>
             <li className="bg-zinc-900 rounded-md p-4">
               <p className="text-gray-100 font-medium">Delete User</p>
-              <p className="text-gray-300">DELETE:  {'{Base_url}'}/{'{api_key}'}/user/delete/{'{id}'} – Delete a user by their email.</p>
+              <p className="text-gray-300">DELETE:  {'{Base_url}'}/{'{api_key}'}/user/delete/{'{user_email}'} – Delete a user by their email.</p>
             </li>
           </ul>
         </div>

@@ -13,6 +13,7 @@ import Layout2 from './components2/Layout2';
 import ApiLinks from './Pages/ApiPage';
 import AllUsers from './Pages/UsershowPage';
 import Overview from './Pages/OverviewPage';
+import ApiUsagePage from './Pages/ApiUsagePage';
 
 import { ProtectRoute, PublicRoute } from './utils/userAuthenticated';
 import ProfilePage from './Pages/ProfilePage';
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
         { path: "register", element: (<PublicRoute><RegisterPage /></PublicRoute>) },  
         { path: "login", element: (<PublicRoute><LoginPage /></PublicRoute>) },  
         { path: "contact", element: <ContactPage /> },  
+        { path: "docs", element: <Overview /> }, 
       ],
     },
     {
@@ -36,9 +38,10 @@ const router = createBrowserRouter([
       children: [
         { index: true, element: (<ProtectRoute><ApiLinks /></ProtectRoute>) },
         { path: "users", element: (<ProtectRoute><AllUsers /></ProtectRoute>) },  
-        { path: "overview", element: (<ProtectRoute><Overview /></ProtectRoute>) },  
+        { path: "docs", element: (<ProtectRoute><Overview /></ProtectRoute>) },  
         { path: "profile", element: (<ProtectRoute><ProfilePage /></ProtectRoute>) }, 
         { path: "contact", element: (<ProtectRoute><ContactPage /></ProtectRoute>) },  
+        { path: "useapi", element: (<ProtectRoute><ApiUsagePage /></ProtectRoute>)}
       ],
     },
 ]);

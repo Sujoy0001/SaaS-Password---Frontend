@@ -22,7 +22,7 @@ const NAV_LINKS = [
     icon: UsersIcon
   },
   {
-    path: '/index/overview',
+    path: '/index/useapi',
     name: 'Overview',
     icon: ChartBarIcon
   },
