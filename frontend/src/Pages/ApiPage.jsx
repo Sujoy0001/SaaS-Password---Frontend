@@ -45,18 +45,35 @@ const ApiPage = () => {
     }
   };
 
-
   const copyToClipboard = async (text, endpoint) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    setCopiedEndpoints(prev => ({ ...prev, [endpoint]: true }));
-    setTimeout(() => {
-      setCopiedEndpoints(prev => ({ ...prev, [endpoint]: false }));
-    }, 2000);
-  } catch (err) {
-    // Fallback for older browsers if needed
-  }
-};
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedEndpoints(prev => ({ ...prev, [endpoint]: true }));
+      setTimeout(() => {
+        setCopiedEndpoints(prev => ({ ...prev, [endpoint]: false }));
+      }, 2000);
+    } catch (err) {
+      // Fallback for older browsers if needed
+    }
+  };
+
+  // Method to get color and style for HTTP methods
+  const getMethodStyle = (method) => {
+    switch(method.toUpperCase()) {
+      case 'GET':
+        return 'bg-blue-900/30 text-blue-300 border-green-800';
+      case 'POST':
+        return 'bg-green-900/30 text-green-500 border-blue-800';
+      case 'PUT':
+        return 'bg-yellow-900/30 text-yellow-400 border-yellow-800';
+      case 'DELETE':
+        return 'bg-red-900/30 text-red-500 border-red-800';
+      case 'PATCH':
+        return 'bg-purple-900/30 text-purple-400 border-purple-800';
+      default:
+        return 'bg-gray-700/30 text-gray-400 border-gray-800';
+    }
+  };
 
   if (loading) {
     return (
@@ -92,7 +109,7 @@ const ApiPage = () => {
               Continue
             </button>
             <button
-              onClick={fetchUsers}
+              onClick={fetchClientData}
               className="px-4 py-2 text-sm font-medium text-gray-100 bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150"
             >
               Retry
@@ -109,7 +126,7 @@ const ApiPage = () => {
         <header className="mb-8 flex justify-between items-start">
           <div>
             <h1 className="text-2xl sm:text-4xl font-semibold text-gray-100 mb-2">
-              Wellcome, <span className="text-purple-950 font-semibold italic">{clientData.username}</span>
+              Welcome, <span className="text-purple-950 font-semibold italic">{clientData?.username}</span>
             </h1>
             <p className="text-gray-400 italic">
               Below are the available endpoints you can integrate into your projects.
@@ -136,7 +153,7 @@ const ApiPage = () => {
           </p>
         </div>
 
-         {clientData ? (
+        {clientData ? (
           <div className="space-y-6">
             {/* API Endpoints Section */}
             <div className="shadow-lg overflow-hidden border rounded-lg border-zinc-700">
@@ -150,65 +167,73 @@ const ApiPage = () => {
 
                 {clientData.routes && typeof clientData.routes === "object" ? (
                   <div className="space-y-3">
-                    {Object.entries(clientData.routes).map(([endpoint, url]) => (
-                    <div className="p-0">
-                      <div className="group flex items-center gap-2 max-w-full mb-2 overflow-hidden">
-                        {/* Animated dot */}
-                        <div className="flex-shrink-0 h-2 w-2 bg-blue-200 rounded-full "></div>                      
-                        {/* Truncated text with hover effects */}
-                        <span className="font-medium text-gray-100 italic truncate group-hover:text-white group-hover:translate-x-1 transition-all duration-200">
-                          {endpoint}
-                        </span>
-                      </div>
-                      <div
-                        key={endpoint}
-                        className="group flex flex-col sm:flex-row justify-between items-start sm:items-center bg-zinc-800/50 hover:bg-zinc-900 border border-zinc-700 hover:border-zinc-600 p-2 rounded-lg transition-all duration-200"
-                      >
-                        <div className="mb-2 sm:mb-0 flex-1 min-w-0">
-                          <div className="flex items-start">
-                            <div className="overflow-hidden">
-                              <span className="text-blue-400/90 text-sm font-mono break-all hover:text-blue-300 transition-colors ml-3">
-                                {url}
-                              </span>
+                    {Object.entries(clientData.routes).map(([endpoint, routeData]) => {
+                      // Check if routeData is an object with url and method, or just a URL string
+                      const url = typeof routeData === 'object' ? routeData.url : routeData;
+                      const method = typeof routeData === 'object' ? routeData.method : 'GET';
+                      
+                      return (
+                        <div className="p-0" key={endpoint}>
+                          <div className="group flex items-center gap-2 max-w-full mb-2 overflow-hidden">
+                            <div className="flex-shrink-0 h-2 w-2 bg-blue-200 rounded-full"></div>                      
+                            <span className="font-medium text-gray-100 italic truncate group-hover:text-white group-hover:translate-x-1 transition-all duration-200">
+                              {endpoint}
+                            </span>
+                          </div>
+                          <div
+                            className="group flex flex-col sm:flex-row justify-between items-start sm:items-center bg-zinc-800/50 hover:bg-zinc-900 border border-zinc-700 hover:border-zinc-600 p-2 rounded-lg transition-all duration-200"
+                          >
+                            <div className="mb-2 sm:mb-0 flex-1 min-w-0">
+                              <div className="flex items-start">
+                                <div className="overflow-hidden justify-center items-center">
+                                  <div className="flex items-center gap-2">
+                                    <span className={`text-xs font-bold px-6 py-2.5 rounded ${getMethodStyle(method)}`}>
+                                      {method}
+                                    </span>
+                                    <span className="text-blue-400/90 text-sm font-mono break-all hover:text-blue-300 transition-colors ml-3">
+                                      {url}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                copyToClipboard(url, endpoint);
+                              }}
+                              className={`
+                                flex items-center 
+                                text-sm font-medium 
+                                ${copiedEndpoints[endpoint] 
+                                  ? 'text-green-400 bg-green-900/20' 
+                                  : 'text-gray-300 hover:text-white bg-zinc-900 hover:bg-zinc-800'
+                                }
+                                px-4 py-2 rounded-lg 
+                                border ${copiedEndpoints[endpoint] ? 'border-green-800' : 'border-zinc-700 hover:border-zinc-600'}
+                                transition-all duration-200
+                                shadow-sm ${copiedEndpoints[endpoint] ? 'shadow-green-900/30' : 'shadow-zinc-900/30 hover:shadow-md'}
+                                focus:outline-none focus:ring-2 focus:ring-blue-500/50
+                              `}
+                              aria-label={`Copy ${endpoint}`}
+                              disabled={copiedEndpoints[endpoint]}
+                            >
+                              {copiedEndpoints[endpoint] ? (
+                                <>
+                                  <FiCheck className="mr-2 flex-shrink-0" />
+                                  <span className="whitespace-nowrap">Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FiCopy className="mr-2 flex-shrink-0" />
+                                  <span className="whitespace-nowrap">Copy URL</span>
+                                </>
+                              )}
+                            </button>
                           </div>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            copyToClipboard(url, endpoint);
-                          }}
-                          className={`
-                            flex items-center 
-                            text-sm font-medium 
-                            ${copiedEndpoints[endpoint] 
-                              ? 'text-green-400 bg-green-900/20' 
-                              : 'text-gray-300 hover:text-white bg-zinc-900 hover:bg-zinc-800'
-                            }
-                            px-4 py-2 rounded-lg 
-                            border ${copiedEndpoints[endpoint] ? 'border-green-800' : 'border-zinc-700 hover:border-zinc-600'}
-                            transition-all duration-200
-                            shadow-sm ${copiedEndpoints[endpoint] ? 'shadow-green-900/30' : 'shadow-zinc-900/30 hover:shadow-md'}
-                            focus:outline-none focus:ring-2 focus:ring-blue-500/50
-                          `}
-                          aria-label={`Copy ${endpoint}`}
-                          disabled={copiedEndpoints[endpoint]}
-                        >
-                          {copiedEndpoints[endpoint] ? (
-                            <>
-                              <FiCheck className="mr-2 flex-shrink-0" />
-                              <span className="whitespace-nowrap">Copied!</span>
-                            </>
-                          ) : (
-                            <>
-                              <FiCopy className="mr-2 flex-shrink-0" />
-                              <span className="whitespace-nowrap">Copy URL</span>
-                            </>
-                          )}
-                        </button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-400">
@@ -219,11 +244,11 @@ const ApiPage = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-gray-800 rounded-xl p-8 text-center">
-            <p className="text-gray-400">No API data found</p>
+          <div className="bg-zinc-950 rounded-xl p-8 text-center">
+            <p className="text-gray-400 font-semibold">No API data found</p>
             <button
               onClick={fetchClientData}
-              className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-gray-100 rounded-md transition-colors"
+              className="mt-4 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-gray-100 rounded-md transition-colors"
             >
               Load Data
             </button>
