@@ -126,7 +126,7 @@ const ApiPage = () => {
         <header className="mb-8 flex justify-between items-start">
           <div>
             <h1 className="text-2xl sm:text-4xl font-semibold text-gray-100 mb-2">
-              Welcome, <span className="text-purple-950 font-semibold italic">{clientData?.username}</span>
+              Welcome, <span className="text-purple-500 font-semibold italic">{clientData?.username}</span>
             </h1>
             <p className="text-gray-400 italic">
               Below are the available endpoints you can integrate into your projects.

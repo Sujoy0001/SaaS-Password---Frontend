@@ -369,12 +369,12 @@ export default RegisterForm;
       </header>
 
       <div className="mb-6">
-        <div className="flex justify-start items-center">
+        <div className="grid grid-cols-2 gap-2 justify-center items-start md:grid-cols-3 lg:grid-cols-6">
           {Object.keys(codeSnippets).map((lang) => (
             <button
               key={lang}
               onClick={() => setActiveTab(lang)}
-              className={`px-4 py-2 mr-2 rounded font-medium ${
+              className={`px-4 py-2 sm:mb-0 rounded font-medium ${
                 activeTab === lang
                   ? 'bg-zinc-800 text-yellow-300'
                   : 'bg-zinc-900 text-gray-300 hover:bg-zinc-700'
@@ -385,6 +385,7 @@ export default RegisterForm;
           ))}
         </div>
       </div>
+
 
       <div className="rounded-lg overflow-hidden border border-zinc-800">
         <div className="flex justify-between items-center bg-zinc-800 p-3">
