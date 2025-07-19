@@ -215,7 +215,7 @@ const UsershowPage = () => {
                 key={user.id || user.email}
                 className="bg-zinc-950 rounded-lg shadow-lg border border-zinc-800 hover:border-zinc-600 transition-colors cursor-pointer"
               >
-                <div className="p-3">
+                <div className="p-6">
                   <div className="flex items-center mb-4">
                     <div className="bg-zinc-500/30 p-3 rounded-full mr-4">
                       <FiUser className="text-gray-400" />
@@ -236,7 +236,7 @@ const UsershowPage = () => {
                   <button
                     onClick={() => handleDelete(user.email)}
                     disabled={deletingEmail === user.email}
-                    className="w-auto flex float-end mb-4 items-center justify-center py-2 px-4 bg-red-800 hover:bg-red-600 rounded-md text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-auto flex float-end mb-2 items-center justify-center py-2 px-4 bg-red-800 hover:bg-red-600 rounded-md text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {deletingEmail === user.email ? (
                       <>
