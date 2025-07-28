@@ -215,7 +215,7 @@ const UsershowPage = () => {
                 key={user.id || user.email}
                 className="bg-zinc-950 rounded-lg shadow-lg border border-zinc-800 hover:border-zinc-600 transition-colors cursor-pointer"
               >
-                <div className="p-6">
+                <div className="py-4 px-6">
                   <div className="flex items-center mb-4">
                     <div className="bg-zinc-500/30 p-3 rounded-full mr-4">
                       <FiUser className="text-gray-400" />
