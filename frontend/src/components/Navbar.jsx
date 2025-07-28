@@ -17,8 +17,6 @@ const Navbar = () => {
           {/* Left side - Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center justify-center">
-              {/* Logo can be an image or text, here we use text for simplicity */}
-              <img src={logo} alt="PlugAPI Logo" className="h-10 w-auto mr-2" />
               <h2 className="text-3xl font-bold text-white italic hover:text-zinc-200">
                 PlugAPI
               </h2>
